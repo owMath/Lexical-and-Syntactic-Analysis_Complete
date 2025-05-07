@@ -15,14 +15,34 @@ import sys
 import numpy as np
 from collections import namedtuple
 
+# Estrutura do Token
 Token = namedtuple('Token', ['value', 'type', 'line', 'col'])
 
+# Variáveis Globais
 # Operadores válidos
 OPERATORS = {'+', '-', '*', '/', '%', '^', '|', '<', '>', '==', '!=', '<=', '>='}
 KEYWORDS = {'RES', 'MEM', 'if', 'then', 'else', 'for', 'V'}
 
 history = []
 memory = np.float16(0.0)
+
+""" Tratamento de erros:
+Caracteres não reconhecidos > Utilize apenas caracteres válidos: números, operadores e parênteses
+Números mal formados > Números reais devem ter apenas um ponto decimal
+Operadores inválidos > Toda expressão deve começar com parêntese esquerdo
+Parênteses não balanceados > Verifique se cada parêntese aberto tem seu correspondente fechado
+Expressões mal formadas > Use apenas operadores válidos: +, -, *, /, %, ^, |, <, >, ==, !=, <=, >=
+Divisão por zero > Verifique se o divisor não é zero antes da operação
+Overflow em operações > Os números devem estar dentro do range de float16 (±65504)
+"""
+
+""" Exemplos de Não Aceitação:
+1a2 → Não aceito: número seguido de letra
+++ → Não aceito: operador duplicado
+5. → Não aceito: número real incompleto
+1e → Não aceito: notação científica incompleta
+@ → Não aceito: caractere não reconhecido
+"""
 
 def dfa_lexer(line, line_num):
     tokens = []
@@ -123,7 +143,8 @@ def parse_expr(tokens):
         tokens.pop(0)  # RES
         if tokens.pop(0).value != ')':
             raise SyntaxError("Expected ')' after RES")
-        return history[-(index + 1)] if index < len(history) else np.float16(0.0)
+        return history [- index] #[len(history) - 1
+
 
     elif tokens[0].type in ['REAL', 'INT'] and tokens[1].value == 'MEM':
         val = np.float16(float(tokens.pop(0).value))
