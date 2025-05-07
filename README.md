@@ -110,6 +110,8 @@ Linha 1: (1 2 + 3)
 ```
 
 ## Diagrama DFA
+[Acesse o Simulador online criado](https://grupo04.up.railway.app/) ✅
+
 ![Diagrama DFA](diagrama_novo.png)
 
 ## Legenda dos Estados
